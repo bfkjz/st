@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>文档标题</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <script src="https://cdn.bootcdn.net/ajax/libs/viewerjs/1.11.1/viewer.min.js"></script>
+    <link href="https://cdn.bootcdn.net/ajax/libs/viewerjs/1.11.1/viewer.min.css" rel="stylesheet">
+</head>
+<style>
+    .loading_bj {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 99999;
+        background-color: rgba(255, 255, 255, 0.5);
+        transition: 0.2s ease-in;
+        transition-property: background-color;
+        /* display: none; */
+    }
+
+    .spinner2 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 50px;
+        height: 40px;
+        text-align: center;
+        font-size: 10px;
+    }
+
+    .spinner2>div {
+        background-color: #333;
+        height: 100%;
+        width: 6px;
+        display: inline-block;
+        -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+        animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    }
+
+    .spinner2 .rect2 {
+        -webkit-animation-delay: -1.1s;
+        animation-delay: -1.1s;
+    }
+
+    .spinner2 .rect3 {
+        -webkit-animation-delay: -1.0s;
+        animation-delay: -1.0s;
+    }
+
+    .spinner2 .rect4 {
+        -webkit-animation-delay: -0.9s;
+        animation-delay: -0.9s;
+    }
+
+    .spinner2 .rect5 {
+        -webkit-animation-delay: -0.8s;
+        animation-delay: -0.8s;
+    }
+
+    @-webkit-keyframes sk-stretchdelay {
+
+        0%,
+        40%,
+        100% {
+            -webkit-transform: scaleY(0.4)
+        }
+
+        20% {
+            -webkit-transform: scaleY(1.0)
+        }
+    }
+
+    @keyframes sk-stretchdelay {
+
+        0%,
+        40%,
+        100% {
+            transform: scaleY(0.4);
+            -webkit-transform: scaleY(0.4);
+        }
+
+        20% {
+            transform: scaleY(1.0);
+            -webkit-transform: scaleY(1.0);
+        }
+    }
+
+    div#content {
+        width: 1000px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 30px auto;
+    }
+
+    .imgbg {
+        width: 300px;
+        height: auto;
+        border-radius: 14px;
+        padding: 10px;
+        margin: 20px 10px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 5px 20px rgb(90 107 167 / 20%);
+    }
+
+    img.stimg {
+        width: 100%;
+        height: auto;
+        border-radius: 14px;
+        cursor: pointer;
+    }
+
+    a.sttitle {
+        text-decoration: none;
+        color: #151515;
+        font-weight: 600;
+        text-align: center;
+        margin: 15px 0px 10px 0px;
+    }
+</style>
+
+<body>
+    <div class='loading_bj' id='CI-loading'>
+        <div class="spinner2">
+            <div class="rect1"></div>
+            <div class="rect2"></div>
+            <div class="rect3"></div>
+            <div class="rect4"></div>
+            <div class="rect5"></div>
+        </div>
+    </div>
+
+    <div id="content">
+    </div>
+</body>
+<script>
+    var str = "";
+    var more_img = [];
+    var imgs = [];
+    var img_title = [];
+    var api_proxy = "http://cesh.eu5.org";
+
+    var p1 = new Promise(function (resolve, reject) {
+        var xhr = new XMLHttpRequest(); // 创建xhr对象
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                    var result = xhr.responseText;
+                    str = result;
+                    // console.log(result);
+                    startmain();
+                } else {
+                    alert("错误码：" + xhr.status);
+                }
+            }
+        }
+        var url = api_proxy + '?https://asiantolick.com/';
+        xhr.open('get', url, true);
+        xhr.send();
+    })
+
+    // p1.then((data) => {
+    //     console.log(data)
+    // });
+
+    function startmain() {
+        var title_more = /<a mob="0" webp="0" href="(.*?)" target=/gi;
+        var imgurl = /<img src="(.*?)" class="miniaturaImg fotoLazy" data-src="(.*?)" src-original="(.*?)" src-prev="" alt="(.*?)" post-id=/gi;
+        var t_m_s = str.match(title_more);
+        var i_u = str.match(imgurl);
+        for (let x = 0; x <= i_u.length; x++) {
+            if (i_u[x] !== undefined) {
+                let iurl = i_u[x].split('"')[1];
+                imgs.push(iurl);
+                let ititle = i_u[x].split('"')[11];
+                img_title.push(ititle);
+            }
+
+        };
+
+        for (let i = 0; i < t_m_s.length; i++) {
+            if (t_m_s[i] !== undefined) {
+                let tmh = t_m_s[i].replace(/<a mob="0" webp="0" href="/g, "").replace(/" target=/g, "");
+                more_img.push(tmh);
+            }
+
+        }
+        // console.log(more_img);
+        // console.log(imgs);
+        // console.log(img_title);
+
+        document.getElementById("CI-loading").style.display = "none";
+        addcontent();
+    }
+
+    function addcontent() {
+        for (let i = 0; i <= imgs.length; i++) {
+            var bgdiv = document.createElement("div");
+            var stimg = document.createElement("img");
+            var morest = document.createElement("a");
+            // bgdiv.setAttribute("class", "imgbg");
+            // stimg.setAttribute("class", "stimg");
+            // morest.setAttribute("class", "sttitle");
+            bgdiv.className = "imgbg";
+            stimg.className = "stimg";
+            morest.className = "sttitle";
+
+            stimg.src = api_proxy + "/tpdl.php?" + imgs[i];
+            bgdiv.appendChild(stimg);
+            morest.href = more_img[i];
+            morest.setAttribute("href", "./st_info?=" + more_img[i]);
+            morest.setAttribute("target", "_blank");
+            morest.appendChild(document.createTextNode(img_title[i]));
+            bgdiv.appendChild(morest);
+            document.getElementById("content").appendChild(bgdiv);
+            var viewer = new Viewer(document.getElementById('content'), {url: 'src'});
+        }
+    }
+</script>
+
+
+</html>
