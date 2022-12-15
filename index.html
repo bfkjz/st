@@ -3,8 +3,9 @@
 
 <head>
     <meta charset="utf-8">
-    <title>文档标题</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>绅士</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
     <script src="https://cdn.bootcdn.net/ajax/libs/viewerjs/1.11.1/viewer.min.js"></script>
     <link href="https://cdn.bootcdn.net/ajax/libs/viewerjs/1.11.1/viewer.min.css" rel="stylesheet">
 </head>
@@ -90,7 +91,7 @@
         }
     }
 
-    div#content {
+    #content {
         width: 1000px;
         display: flex;
         flex-direction: column;
@@ -123,7 +124,8 @@
         text-align: center;
         margin: 15px 0px 10px 0px;
     }
-        @media only screen and (max-width: 1200px) {
+
+    @media only screen and (max-width: 1200px) {
         .imgbg {
             width: 90%;
             margin: 25px 10px;
@@ -211,26 +213,31 @@
 
     function addcontent() {
         for (let i = 0; i <= imgs.length; i++) {
-            var bgdiv = document.createElement("div");
-            var stimg = document.createElement("img");
-            var morest = document.createElement("a");
-            // bgdiv.setAttribute("class", "imgbg");
-            // stimg.setAttribute("class", "stimg");
-            // morest.setAttribute("class", "sttitle");
-            bgdiv.className = "imgbg";
-            stimg.className = "stimg";
-            morest.className = "sttitle";
+            if (imgs[i] !== undefined) {
 
-            stimg.src = api_proxy + "/tpdl.php?" + imgs[i];
-            bgdiv.appendChild(stimg);
-            morest.href = more_img[i];
-            morest.setAttribute("href", "./st_info?=" + more_img[i]);
-            morest.setAttribute("target", "_blank");
-            morest.appendChild(document.createTextNode(img_title[i]));
-            bgdiv.appendChild(morest);
-            document.getElementById("content").appendChild(bgdiv);
-            var viewer = new Viewer(document.getElementById('content'), {url: 'src'});
+
+                var bgdiv = document.createElement("div");
+                var stimg = document.createElement("img");
+                var morest = document.createElement("a");
+                // bgdiv.setAttribute("class", "imgbg");
+                // stimg.setAttribute("class", "stimg");
+                // morest.setAttribute("class", "sttitle");
+                bgdiv.className = "imgbg";
+                stimg.className = "stimg";
+                morest.className = "sttitle";
+
+                stimg.src = api_proxy + "/tpdl.php?" + imgs[i];
+                bgdiv.appendChild(stimg);
+                morest.href = more_img[i];
+                morest.setAttribute("href", "./st_info?=" + more_img[i]);
+                morest.setAttribute("target", "_blank");
+                morest.appendChild(document.createTextNode(img_title[i]));
+                bgdiv.appendChild(morest);
+                document.getElementById("content").appendChild(bgdiv);
+            }
+
         }
+        var viewer = new Viewer(document.getElementById('content'), { url: 'src' });
     }
 </script>
 
